@@ -93,77 +93,20 @@ public class Main {
                 String name = arr[0];
                 String surname = arr[1];
                 Author newAuthor = new Author(name, surname);
-                String nextLine=br.readLine();
-                if (nextLine!=null) {
+                String nextLine = br.readLine();
+                if (nextLine != null) {
                     String[] wordsOfNextLine = nextLine.split(" ");
                     if (wordsOfNextLine[0].equals("Книга:")) {
-                        nextLine  = nextLine.replaceAll("Книга: Название= ", "");
-                        nextLine  = nextLine.replaceAll("Описание= ", "");
-                        nextLine  = nextLine.replaceAll(",", "");
-                        nextLine  = nextLine.replaceAll("]", "");
-                        String[] arr2;
-                        arr2 = nextLine.split(" ");
-                        String nameBook = arr2[0];
-                        String descriptionBook = "";
-                        for (int i = 1; i < arr2.length; i++) {
+                        thisMethod(nextLine, br, genres, newAuthor);
 
-//                    description.append(" ").append(arr[i]);
-                            if(descriptionBook.equals("")){
-                                descriptionBook = descriptionBook + arr2[i];
-                            }
-                            else{
-                                descriptionBook = descriptionBook +" "+ arr2[i];
-                            }
-                        }
-                        String str2 = null;
-                        str2 = br.readLine();
-//                    str = str.replaceAll("Год релиза= ", "");
-//                    str = str.replaceAll("Жанр= ", "");
-//                    str = str.replaceAll("Автор ", "");
-                        str2 = str2.replaceAll(",", "");
-                        str2 = str2.replaceAll("]", "");
-                        arr2 = str2.split(" ");
-                        int yearOfRelease;
-                        try {
-                            yearOfRelease = Integer.parseInt(arr2[2]);
-                        } catch (Exception e) {
-                            System.out.println("Exception " + e);
-                            return null;
-                        }
-
-                        Genre genre = null;
-                        String nameOfGenre = arr2[4];
-                        for (Genre value : genres) {
-                            if (nameOfGenre.equals(value.getName())) {
-                                genre = value;
-                            }
-                        }
-                        if (genre == null) {
-                            System.out.println("Извините произошла ошибка в программе");
-                            return null;
-                        }
-
-
-                        newAuthor.addBookToList(new Book(nameBook, descriptionBook, yearOfRelease, newAuthor, genre));
-
-//                    newAuthors.add(newAuthor);
-
-//                            if((nextLine = br.readLine()) .equals(",")){
-//                                br.readLine();
-//                            }
-
-
-br.readLine();
 
                     }
-                    }
+                }
 //
 
 
-
-
                 newAuthors.add(newAuthor);
-                System.out.println(newAuthors);
+
 
             }
 
@@ -174,70 +117,220 @@ br.readLine();
         return newAuthors;
     }
 
+    public static void thisMethod(String nextLine, BufferedReader br, List<Genre> genres, Author newAuthor) throws IOException {
+        nextLine = nextLine.replaceAll("Книга: Название= ", "");
+//    nextLine = nextLine.replaceAll("Описание= ", "");
+        nextLine = nextLine.replaceAll(",", "");
+        nextLine = nextLine.replaceAll("]", "");
+
+//    System.out.println(nextLine);
+        String[] arr2 = nextLine.split(" ");
+//    for(int i=0;i<arr2.length;i++){
+//        System.out.println(arr2[i]);
+//    }
+        String nameBook = "";
+//    String nameBook = arr2[0];
+        String source;
+        int index = 0;
+        while (!arr2[index].equals("Описание=")) {
+            source = arr2[index];
+            if (nameBook.equals("")) {
+                nameBook = nameBook + source;
+            } else {
+                nameBook = nameBook + " " + source;
+            }
+
+            index++;
+
+        }
+
+        String descriptionBook = "";
+        for (int i = index + 1; i < arr2.length; i++) {
+
+//                    description.append(" ").append(arr[i]);
+            if (descriptionBook.equals("")) {
+                descriptionBook = descriptionBook + arr2[i];
+            } else {
+                descriptionBook = descriptionBook + " " + arr2[i];
+            }
+        }
+
+        String str2 = null;
+        str2 = br.readLine();
+        str2 = str2.replaceAll(",", "");
+        str2 = str2.replaceAll("]", "");
+        arr2 = str2.split(" ");
+        int yearOfRelease;
+        try {
+            yearOfRelease = Integer.parseInt(arr2[2]);
+        } catch (Exception e) {
+            System.out.println("Exception " + e);
+            return;
+        }
+
+        Genre genre = null;
+        String nameOfGenre = arr2[4];
+        for (Genre value : genres) {
+            if (nameOfGenre.equals(value.getName())) {
+                genre = value;
+            }
+        }
+        if (genre == null) {
+            System.out.println("Извините произошла ошибка в программе");
+            return;
+        }
+
+
+        newAuthor.addBookToList(new Book(nameBook, descriptionBook, yearOfRelease, newAuthor, genre));
+        nextLine = br.readLine();
+        if (nextLine.equals(",")) {
+            return;
+        }
+        String[] checkNextLine = nextLine.split(" ");
+        if (checkNextLine[0].equals("Книга:")) {
+            thisMethod(nextLine, br, genres, newAuthor);
+        }
+    }
+
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////ЗАПИСЬ КНИГ ИЗ ФАЙЛА////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public static void readBooksFromFile(String nextLine,BufferedReader br,List<Author> authors,List<Genre> genres,List<Book> newBooks) throws IOException {
+        nextLine = nextLine.replaceAll("Книга: Название= ", "");
+//    nextLine = nextLine.replaceAll("Описание= ", "");
+        nextLine = nextLine.replaceAll(",", "");
+        nextLine = nextLine.replaceAll("]", "");
+
+//    System.out.println(nextLine);
+        String[] arr2 = nextLine.split(" ");
+//    for(int i=0;i<arr2.length;i++){
+//        System.out.println(arr2[i]);
+//    }
+        String nameBook = "";
+//    String nameBook = arr2[0];
+        String source;
+        int index = 0;
+        while (!arr2[index].equals("Описание=")) {
+            source = arr2[index];
+            if (nameBook.equals("")) {
+                nameBook = nameBook + source;
+            } else {
+                nameBook = nameBook + " " + source;
+            }
+
+            index++;
+
+        }
+
+        String descriptionBook = "";
+        for (int i = index + 1; i < arr2.length; i++) {
+
+//                    description.append(" ").append(arr[i]);
+            if (descriptionBook.equals("")) {
+                descriptionBook = descriptionBook + arr2[i];
+            } else {
+                descriptionBook = descriptionBook + " " + arr2[i];
+            }
+        }
+
+        String str2 = null;
+        str2 = br.readLine();
+        str2 = str2.replaceAll(",", "");
+        str2 = str2.replaceAll("]", "");
+        arr2 = str2.split(" ");
+        int yearOfRelease;
+        try {
+            yearOfRelease = Integer.parseInt(arr2[2]);
+        } catch (Exception e) {
+            System.out.println("Exception " + e);
+            return;
+        }
+        Author author = null;
+        String authorName = arr2[6];
+        String authorSurname = arr2[7];
+        for (Author value : authors) {
+            if (authorName.equals(value.getName()) & authorSurname.equals(value.getSurname())) {
+                author = value;
+            }
+        }
+        Genre genre = null;
+        String nameOfGenre = arr2[4];
+        for (Genre value : genres) {
+            if (nameOfGenre.equals(value.getName())) {
+                genre = value;
+            }
+        }
+        if (genre == null&author==null) {
+            System.out.println("Извините произошла ошибка в программе");
+            return;
+        }
+
+
+        newBooks.add(new Book(nameBook, descriptionBook, yearOfRelease, author, genre));
+
+    }
+
     public static List<Book> recordAllBooksFromFileToList(List<Author> authors, List<Genre> genres) {
         List<Book> newBooks = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(fileNameBooks))) {
             br.readLine();
-            String str;
-            while ((str = br.readLine()) != null) {
-                str = str.replaceAll("Книга: Название= ", "");
-                str = str.replaceAll("Описание= ", "");
-                str = str.replaceAll(",", "");
-                str = str.replaceAll("]", "");
-                String[] arr = str.split(" ");
-                String name = arr[0];
-                String description = "";
-                for (int i = 1; i < arr.length; i++) {
-
-//                    description.append(" ").append(arr[i]);
-                    if(description.equals("")){
-                        description = description + arr[i];
-                    }
-                    else{
-                        description = description +" "+ arr[i];
-                    }
-
-                }
-
-                str = br.readLine();
-                str = str.replaceAll("Год релиза= ", "");
-                str = str.replaceAll("Жанр= ", "");
-                str = str.replaceAll("Автор ", "");
-                str = str.replaceAll(",", "");
-                str = str.replaceAll("]", "");
-                arr = str.split(" ");
-                int yearOfRelease;
-                try {
-                    yearOfRelease = Integer.parseInt(arr[0]);
-                } catch (Exception e) {
-                    System.out.println("Exception " + e);
-                    return null;
-                }
-                Author author = null;
-                String authorName = arr[2];
-                String authorSurname = arr[3];
-                for (Author value : authors) {
-                    System.out.println(value);
-                    if (authorName.equals(value.getName()) & authorSurname.equals(value.getSurname())) {
-                        author = value;
-                    }
-                }
-                Genre genre = null;
-                String nameOfGenre = arr[1];
-                for (Genre value : genres) {
-                    if (nameOfGenre.equals(value.getName())) {
-                        genre = value;
-                    }
-                }
-                if (genre == null || author == null) {
-                    System.out.println("Извините произошла ошибка в програме");
-                    return null;
-                }
-
-                newBooks.add(new Book(name, description, yearOfRelease, author, genre));
+            String nextLine;
+            while ((nextLine = br.readLine()) != null) {
+                readBooksFromFile(nextLine,br,authors,genres,newBooks);
+//                str = str.replaceAll("Книга: Название= ", "");
+//                str = str.replaceAll("Описание= ", "");
+//                str = str.replaceAll(",", "");
+//                str = str.replaceAll("]", "");
+//                String[] arr = str.split(" ");
+//
+//                String name = arr[0];
+//                String description = "";
+//                for (int i = 1; i < arr.length; i++) {
+//
+////                    description.append(" ").append(arr[i]);
+//                    if (description.equals("")) {
+//                        description = description + arr[i];
+//                    } else {
+//                        description = description + " " + arr[i];
+//                    }
+//
+//                }
+//
+//                str = br.readLine();
+//                str = str.replaceAll("Год релиза= ", "");
+//                str = str.replaceAll("Жанр= ", "");
+//                str = str.replaceAll("Автор ", "");
+//                str = str.replaceAll(",", "");
+//                str = str.replaceAll("]", "");
+//                arr = str.split(" ");
+//                int yearOfRelease;
+//                try {
+//                    yearOfRelease = Integer.parseInt(arr[0]);
+//                } catch (Exception e) {
+//                    System.out.println("Exception " + e);
+//                    return null;
+//                }
+//                Author author = null;
+//                String authorName = arr[2];
+//                String authorSurname = arr[3];
+//                for (Author value : authors) {
+//                    if (authorName.equals(value.getName()) & authorSurname.equals(value.getSurname())) {
+//                        author = value;
+//                    }
+//                }
+//                Genre genre = null;
+//                String nameOfGenre = arr[1];
+//                for (Genre value : genres) {
+//                    if (nameOfGenre.equals(value.getName())) {
+//                        genre = value;
+//                    }
+//                }
+//                if (genre == null || author == null) {
+//                    System.out.println("Извините произошла ошибка в програме");
+//                    return null;
+//                }
+//
+//                newBooks.add(new Book(name, description, yearOfRelease, author, genre));
             }
 
         } catch (IOException e) {
@@ -360,9 +453,8 @@ br.readLine();
             }
 
 
-
         }
-        if(author==null){
+        if (author == null) {
             System.out.println("Извините автор не найден. Хотите создать нового автора," + '\n' + "или Нет?");
             author = takeVariable(scanner, authorName, authorSurname, authors);
             if (author == null) {
