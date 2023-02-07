@@ -28,6 +28,6 @@ public class Author {
 
     @Override
     public String toString() {
-        return '\n'+"Автор " + "Имя= " + name  + ", Фамилия= " + surname  + ", Список книг=" + listOfBooks+'\n';
+        return '\n'+"Автор " + "Иммя= " + name  + ", Фамилия= " + surname  + ", Список книг=" + listOfBooks+'\n';
     }
 }
